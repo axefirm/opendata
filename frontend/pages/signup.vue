@@ -3,9 +3,9 @@
       <v-flex xs12 sm6 offset-sm3 md4 offset-md4>
         <p v-if="error">{{errorMessage}}</p>
         <v-text-field
-          label="Username"
-          type="text"
-          v-model="username"
+          label="Email"
+          type="email"
+          v-model="email"
         >
         </v-text-field>
         <v-text-field
@@ -23,7 +23,7 @@
 export default {
   data(){
     return{
-      username: "",
+      email: "",
       password: "",
       error: false,
       errorMessage: ""
@@ -31,14 +31,8 @@ export default {
   },
   methods:{
     async signup(){
-      let res = await this.$axios.$post("http://localhost:8080/signup", {username: this.username, password: this.password})
-      console.log(res);
-      if(res.success){
-        this.$router.push("/menu")
-      } else {
-        this.errorMessage = res.data.message;
-        this.error = true;
-      }
+      await this.$store.$dispatch('signInfo', {email: this.email, password: this.password})
+      this.$router.push("/menu")
     }
   }
 }

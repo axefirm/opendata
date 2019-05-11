@@ -25,8 +25,8 @@ module.exports.login = function(req, res){
 module.exports.signup = function(req, res){
   console.log(req.body)
   let now = new Date();
-  let data = {username: req.body.username, password: req.body.password, createdAt: now};
-  db.collection("user").findOne({username: req.body.username}, function(err, foundOne){
+  req.body.createdAd = now;
+  db.collection("user").findOne(req.body, function(err, foundOne){
     if(err) res.json({success: false, data: {message: "Server error mongodb!!!"}})
     if(!foundOne){
       db.collection("user").insertOne(data, function(err, insertedOne){
@@ -51,7 +51,10 @@ module.exports.mjolnir = function(req, res){
 module.exports.checkToken = function(req, res, next){
   jwt.verify(req.headers.authorization, "theSecretKeyToEncryptAndDecrypt", function(err, decoded){
     if(err) res.json({success: false})
-    if(decoded) next();
+    if(decoded){
+      req.locals._id = decoded._id;
+      next();
+    }
     else res.json({success: false})
   })
 }
