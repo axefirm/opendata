@@ -15,9 +15,12 @@ MongoClient.connect("mongodb://localhost:27017", {useNewUrlParser: true}, functi
 // }
 
 module.exports.getMajors = function(req, res){
-  db.collection("major").find({}, {}).toArray(function(err, foundMany){
-    if(err) res.json({success: false});
-    res.json({success: true, data: foundMany})
+  console.log("HHE")
+  db.collection("classes").findOne({Хичээлийн_индекс: req.params.id}, function(err, foundOne){
+    db.collection("hutulbur").find({Харьяалах_нэгжийн_нэр: foundOne.Харьяалах_тэнхим}).toArray(function(err, foundMany){
+      if(err) res.json({success: false})
+      else res.json({success: true, data: foundMany})
+    })
   })
 }
 
@@ -27,6 +30,24 @@ module.exports.getClasses = function(req, res){
     else res.json({success: true, data: foundMany})
   })
 }
+
+module.exports.getSchoolMajors = function(req, res){
+  let data = req.params.names.split(",");
+  console.log(data)
+  for(i = 0; i < data.length; i++){
+    if(data[i] == 'БУС') data[i] = "Бизнесийн сургууль";
+    if(data[i] == 'ШУС') data[i] = "Шинжлэх Ухааны Сургууль";
+    if(data[i] == 'ХШУИС') data[i] = "Хэрэглээний шинжлэх ухаан, инженерчлэлийн сургууль";
+    if(data[i] == 'ОУХНУС') data[i] = "Олон улсын харилцаа, нийтийн удирдлагын сургууль";
+    if(data[i] == 'ХЗС') data[i] = "Хууль зүйн сургууль";
+  }
+  db.collection("hutulbursurhoslol").find({Cургуулийн_нэр: { $in: data }}).toArray(function(err, foundMany){
+    console.log(foundMany)
+    if(err) res.json({success: false})
+    else res.json({success: true, data: foundMany})
+  })
+}
+
 module.exports.profile = function(req, res){
   // console.log(req.headers)
   res.json({name: "Mergen", age: 19});

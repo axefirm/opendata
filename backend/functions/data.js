@@ -10,7 +10,7 @@ MongoClient.connect("mongodb://localhost:27017", {useNewUrlParser: true}, functi
 
 // fundamental data
 module.exports.insertClass = function(req, res){
-  db.collection("class").insertOne(req.body, function(err, insertedOne){
+  db.collection("classes").findOneAndUpdate({_id: ObjectID(req.body._id)}, {$set: {parents: req.body.parents, child: req.body.child}, $addToSet: {majors: {$each: req.body.majors}}}, function(err, updatedOne){
     if(err) res.json({success: false})
     let len = req.body.majors.length;
     let i = 0;
