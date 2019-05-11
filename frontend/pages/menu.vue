@@ -13,23 +13,13 @@
       <v-flex xs12 sm6 md6>
         <v-flex xs12 sm6 d-flex>
           <v-select
-          :items="program"
-          label="Хөтөлбөр"
+          :items="schools"
+          label="Салбар сургууль"
           outline
-          v-model="semestr"
+          v-model="yoschool"
           ></v-select>
         </v-flex>
       </v-flex>
-    <v-flex xs12 sm6 md6>
-      <v-flex xs12 sm6 d-flex>
-        <v-select
-        :items="items"
-        label="Төгсөхийг хүссэн улирал"
-        outline
-        v-model="semestr"
-        ></v-select>
-      </v-flex>
-     </v-flex>
     </div>
     </div>
   </div>
@@ -37,11 +27,11 @@
 
 <script>
 export default {
+  middleware:'auth',
   data(){
     return{
-      program:['blah','blahh'],
-      semestr:"",
-      items:['6','7','8','9'],
+      schools: ['БС','ХШУИС','БУС','ХУС','НУС','ОУХНУС','ХЗС'],
+      yoschool:"",
     }
   }
 }
@@ -84,5 +74,4 @@ export default {
   .nav ul li:first-child{
     padding-left: 0px;
   }
-
 </style>
