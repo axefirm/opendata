@@ -52,7 +52,7 @@ module.exports.checkToken = function(req, res, next){
   jwt.verify(req.headers.authorization, "theSecretKeyToEncryptAndDecrypt", function(err, decoded){
     if(err) res.json({success: false})
     if(decoded){
-      req.locals._id = decoded._id;
+      res.locals._id = decoded._id;
       next();
     }
     else res.json({success: false})

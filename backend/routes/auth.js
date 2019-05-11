@@ -9,7 +9,11 @@ router.post("/login", auth.login)
 
 router.get("/mjolnir/:id/:token", auth.mjolnir)
 
-router.get("/info", auth.checkToken, info.profile);
+router.get("/info", auth.checkToken, info.profile)
+
+router.get("/getmajor", auth.checkToken, info.getMajors)
+
+router.get("/getclasses", auth.checkToken, info.getClasses)
 // router.get("/")
 // router.get("/asdfasdf", auth.checkToken, info.asdfasd);
 module.exports = router;

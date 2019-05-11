@@ -41,9 +41,9 @@ module.exports.insertClass = function(req, res){
 // client data
 
 module.exports.major = function(req, res){
-  db.collection("user").findOne({_id: req.locals._id}, function(err, foundOne){
+  db.collection("user").findOne({_id: res.locals._id}, function(err, foundOne){
     foundOne.major = req.body.major;
-    db.collection("user").updateOne({_id: req.locals._id}, {$set: foundOne}, function(err, updatedOne){
+    db.collection("user").updateOne({_id: res.locals._id}, {$set: foundOne}, function(err, updatedOne){
       if(err) res.json({success: false})
       else res.json({success: true})
     })
@@ -51,9 +51,9 @@ module.exports.major = function(req, res){
 }
 
 module.exports.classes = function(req, res){
-  db.collection("user").findOne({_id: req.locals._id}, function(err, foundOne){
+  db.collection("user").findOne({_id: res.locals._id}, function(err, foundOne){
     foundOne.classes = req.body.classes;
-    db.collection("user").updateOne({_id: req.locals._id}, { $set: foundOne}, function(err, updatedOne){
+    db.collection("user").updateOne({_id: res.locals._id}, { $set: foundOne}, function(err, updatedOne){
       if(err) res.json({success: false})
       else res.json({success: true})
     })

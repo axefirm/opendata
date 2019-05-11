@@ -31,7 +31,7 @@ export default {
   },
   methods:{
     async signup(){
-      await this.$store.$dispatch('signInfo', {email: this.email, password: this.password})
+      await this.$store.dispatch('signInfo', {email: this.email, password: this.password})
       this.$router.push("/menu")
     }
   }
