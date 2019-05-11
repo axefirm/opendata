@@ -62,7 +62,7 @@
           <v-flex xs12 md4>
             <div class="" v-for="(item,index) in majors">
               <v-select
-                :items="['4', '3', '2', '1']"
+                :items="[4, 3, 2, 1]"
                 v-model="majors[index].importancy"
                 :label="item.Хөтөлбөрийн_монгол_нэр + ' / ' + item.Суралцах_хэлбэр + ' / ' + item.Академик_түвшин"
               ></v-select>
@@ -133,7 +133,8 @@ export default {
       data.child = this.child;
       data.majors = this.majors;
       console.log(data)
-      // let res = await this.$axios.$post("http://localhost:8080/insertClass",data)
+      let res = await this.$axios.$post("http://localhost:8080/insertClass",data)
+      console.log(res)
     }
   }
 }

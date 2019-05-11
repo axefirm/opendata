@@ -35,8 +35,8 @@ module.exports.getSchoolMajors = function(req, res){
   let data = req.params.names.split(",");
   console.log(data)
   for(i = 0; i < data.length; i++){
-    if(data[i] == 'БУС') data[i] = "Бизнесийн сургууль";
-    if(data[i] == 'ШУС') data[i] = "Шинжлэх Ухааны Сургууль";
+    if(data[i] == 'БС') data[i] = "Бизнесийн сургууль";
+    if(data[i] == 'ШУС') data[i] = "Шинжлэх ухааны сургууль";
     if(data[i] == 'ХШУИС') data[i] = "Хэрэглээний шинжлэх ухаан, инженерчлэлийн сургууль";
     if(data[i] == 'ОУХНУС') data[i] = "Олон улсын харилцаа, нийтийн удирдлагын сургууль";
     if(data[i] == 'ХЗС') data[i] = "Хууль зүйн сургууль";

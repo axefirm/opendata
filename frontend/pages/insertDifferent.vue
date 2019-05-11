@@ -82,6 +82,10 @@
               :label="item.Хөтөлбөрийн_нэр"
             ></v-checkbox>
           </v-flex>
+
+          <v-flex xs12 md4>
+            <v-btn @click="sendClass()">send</v-btn>
+          </v-flex>
         </v-layout>
       </v-container>
     </v-form>
@@ -101,7 +105,9 @@ export default {
       majors: null,
       kt: null,
       selectedChild: [],
-      selectedParent: [[]]
+      selectedParent: [[]],
+      child: null,
+      parent: null,
     }
   },
   watch:{
@@ -120,6 +126,27 @@ export default {
         if(j == kt.length) kt.push(smt[i]);
         if(i+1 == smt.length) this.kt = kt;
       }
+    },
+    selectedChild: function(val){
+      console.log(val)
+      this.child = []
+      for(let i = 0; i < val.length; i++){
+        this.child.push(this.selectedChild[i].Хичээлийн_индекс)
+        console.log(this.child)
+      }
+    },
+    selectedParent: function(val){
+      console.log(val)
+      this.parent = []
+      for(let i = 0; i < val.length; i++){
+        let tmp = [];
+        for(let j = 0; j < val[i].length; j++){
+          tmp.push(val[i][j].Хичээлийн_индекс)
+
+        }
+        this.parent.push(tmp);
+        console.log(this.parent)
+      }
     }
   },
   methods:{
@@ -133,6 +160,16 @@ export default {
       console.log(smt);
       let res = await this.$axios.$get("http://localhost:8080/getschoolmajors/" + smt)
       if(res.success) this.majors = res.data;
+    },
+    async sendClass(){
+      this.$axios.setToken(this.$store.state.token);
+      let data = this.name;
+      console.log(data)
+      data.parent =  this.parent;
+      data.child = this.child;
+      data.majors = this.majors;
+      console.log(data)
+      // let res = await this.$axios.$post("http://localhost:8080/insertClass",data)
     }
   }
 }
