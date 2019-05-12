@@ -19,7 +19,6 @@ module.exports.getmajordata = function(req, res){
     let data = [];
     if(!foundOne.next){
       async.each(foundOne.classes, function(item, callback){
-        console.log(item)
         db.collection("classes").findOne({Хичээлийн_индекс: item.Хичээлийн_индекс}, function(err, foundItem){
           // console.log(foundItem)
           if(err) callback(err)
@@ -32,29 +31,18 @@ module.exports.getmajordata = function(req, res){
         if(err) res.json({success: false})
         else{
           console.log(data.length)
-          let children = []
-          async.each(data, function(itembig, callback1){
-            async.each(itembig.child, function(child, callback2){
+          let children = [];
+          async.each(data, async function(itembig, callback1){
+            await async.forEachOf(itembig.child, function(childdd, key, callback2){
               let b = false
-              async.each(children, function(childrenitem, callback3){
-                if(childrenitem == child){
-                  b = true;
-                  callback3();
-                }
-              }, function(err){
-                if(!b){
-                  children.push(child);
-                  callback2();
-                }
-              })
+              children.push(childdd);
             }, function(err){
+              console.log("S")
               callback1();
             })
           }, function(err){
-            console.log("GG")
-            console.log(children);
+            res.json({success: true, data: children})
           })
-          res.json({success: false})
         }
       })
     } else res.json({success: true, data: next})
@@ -98,6 +86,13 @@ module.exports.getMajors = function(req, res){
       if(err) res.json({success: false})
       else res.json({success: true, data: foundMany})
     })
+  })
+}
+
+module.exports.getClass = function(req, res){
+  db.collection("classes").findOne({Хичээлийн_индекс: req.params.name}, function(err, mainclass){
+    if(err) res.json(err);
+    else res.json(mainclass);
   })
 }
 

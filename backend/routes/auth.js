@@ -20,6 +20,8 @@ router.get("/getschoolmajors/:names", info.getSchoolMajors)
 router.post("/insertClass", auth.checkToken, data.insertClass)
 
 router.get("/getmajordata", auth.checkToken, info.getmajordata)
+
+router.get("/getclass/:name", auth.checkToken, info.getClass)
 // router.get("/")
 // router.get("/asdfasdf", auth.checkToken, info.asdfasd);
 module.exports = router;

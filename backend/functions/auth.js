@@ -12,6 +12,7 @@ module.exports.login = function(req, res){
   db.collection("user").findOne({email: req.body.email}, function(err, foundOne){
     if(err) res.json({success: false, data: {message: "Server error mongodb!!!"}})
     if(!foundOne) res.json({success: false, data: {message: "Username or password is wrong"}})
+    console.log(foundOne)
     if(foundOne.password == req.body.password){
       let token = jwt.sign({
         email: foundOne.email,
