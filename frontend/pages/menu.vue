@@ -2,25 +2,56 @@
   <div class="container">
     <div class="header">
       <div class="nav">
-        <ul >
+        <ul>
         <li><img src="~/assets/menu/kt.png" alt="" class="logo"></li>
         <li><nuxt-link class="link text" to="/next">Дараа улирал</nuxt-link></li>
         <li><nuxt-link class="link text" to="/all"> Бүх улирал</nuxt-link></li>
         </ul>
       </div>
     </div>
-    <div class="select">
-      <v-flex xs12 sm6 md6>
-        <v-flex xs12 sm6 d-flex>
-          <v-select
-          :items="schools"
-          label="Салбар сургууль"
-          outline
-          v-model="yoschool"
-          ></v-select>
-        </v-flex>
+    <v-form>
+      <v-container>
+    <v-layout wrap>
+      <v-flex xs12 sm6 md4>
+        <v-select
+        :items="schools"
+        label="Салбар сургууль"
+        outline
+        v-model="yoschool"
+        ></v-select>
       </v-flex>
-    </div>
+      <v-flex xs12 sm6 md4>
+        <v-text-field
+              v-model="firstname"
+              label="First name"
+              required
+            ></v-text-field>
+      </v-flex>
+      <v-flex xs12 sm6 md4>
+          <v-text-field
+            v-model="lastname"
+            label="Last name"
+            required
+          ></v-text-field>
+        </v-flex>
+        <v-flex xs12 sm6 md4>
+          <v-text-field
+            v-model="major"
+            :counter="10"
+            label="Major"
+            required
+          ></v-text-field>
+        </v-flex>
+        <v-flex xs12 sm6 md4>
+          <v-text-field
+            v-model="classes"
+            label="Classes"
+            required
+          ></v-text-field>
+        </v-flex>
+      </v-layout>
+    </v-container>
+    </v-form>
     </div>
   </div>
 </template>
@@ -30,14 +61,23 @@ export default {
   middleware:'auth',
   data(){
     return{
-      schools: ['БС','ХШУИС','БУС','ХУС','НУС','ОУХНУС','ХЗС'],
+      schools: ['ХШУИС','БС','БУС','ХУС','НУС','ОУХНУС','ХЗС'],
       yoschool:"",
+      firstname:"",
+      lastname:"",
+      major:"",
+      classes:""
     }
   }
 }
 </script>
 
 <style lang="css" scoped>
+    body{
+      background-image: url('')
+      qweasdzxc
+
+    }
   .header{
     height: 100px;
     width: 100%;
