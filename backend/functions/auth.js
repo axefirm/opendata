@@ -9,12 +9,12 @@ MongoClient.connect("mongodb://localhost:27017", {useNewUrlParser: true}, functi
 })
 
 module.exports.login = function(req, res){
-  db.collection("user").findOne({username: req.body.username}, function(err, foundOne){
+  db.collection("user").findOne({email: req.body.email}, function(err, foundOne){
     if(err) res.json({success: false, data: {message: "Server error mongodb!!!"}})
     if(!foundOne) res.json({success: false, data: {message: "Username or password is wrong"}})
     if(foundOne.password == req.body.password){
       let token = jwt.sign({
-        username: foundOne.username,
+        email: foundOne.email,
         password: foundOne.password,
         _id: foundOne._id
       }, "theSecretKeyToEncryptAndDecrypt")
@@ -26,10 +26,10 @@ module.exports.signup = function(req, res){
   console.log(req.body)
   let now = new Date();
   req.body.createdAd = now;
-  db.collection("user").findOne(req.body, function(err, foundOne){
+  db.collection("user").findOne({email: req.body.email}, function(err, foundOne){
     if(err) res.json({success: false, data: {message: "Server error mongodb!!!"}})
     if(!foundOne){
-      db.collection("user").insertOne(data, function(err, insertedOne){
+      db.collection("user").insertOne(req.body, function(err, insertedOne){
         if(err) res.json({success: false, data: {message: "Server error mongodb!!!"}})
         res.json({success: true})
       })

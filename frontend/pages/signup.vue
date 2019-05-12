@@ -41,6 +41,7 @@
 
 <script>
 export default {
+  middleware: 'logged',
   data(){
     return{
       email: "",

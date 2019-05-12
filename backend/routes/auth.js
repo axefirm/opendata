@@ -18,6 +18,8 @@ router.get("/getclasses", auth.checkToken, info.getClasses)
 router.get("/getschoolmajors/:names", auth.checkToken, info.getSchoolMajors)
 
 router.post("/insertClass", auth.checkToken, data.insertClass)
+
+router.get("/getmajordata", auth.checkToken, info.getmajordata)
 // router.get("/")
 // router.get("/asdfasdf", auth.checkToken, info.asdfasd);
 module.exports = router;

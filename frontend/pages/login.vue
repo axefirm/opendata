@@ -7,10 +7,10 @@
             <p>Login</p>
           </div>
           <v-text-field
-          label="username"
+          label="Email"
           type="email"
           color="#8053CB"
-          v-model="username"
+          v-model="email"
           ></v-text-field>
           <v-text-field
           label="Password"
@@ -42,9 +42,10 @@
 <script>
 export default {
   layout: 'funny',
+  middleware: 'logged',
   data(){
     return{
-      username: "",
+      email: "",
       password: "",
       remembered: false
     }
@@ -67,7 +68,7 @@ export default {
       this.num = 112;
     },
     async login(){
-      let res = await this.$axios.$post("http://localhost:8080/login", {username: this.username, password: this.password})
+      let res = await this.$axios.$post("http://localhost:8080/login", {email: this.email, password: this.password})
       if(res.success){
         this.$cookies.set('_id', res.data._id, {
           path: '/',
@@ -78,7 +79,7 @@ export default {
           maxAge: 60 * 60 * 24 * 7
         })
         this.$store.dispatch('login', {token: res.data.token, _id: res.data._id})
-        this.$router.push("/menu")
+        this.$router.push("/all")
       }
     }
   }

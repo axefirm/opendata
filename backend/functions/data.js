@@ -16,7 +16,7 @@ module.exports.insertClass = function(req, res){
     if(err) res.json({success: false})
     else{
       req.body.majors.forEach(function(item){
-        db.collection("hutulbur").findOneAndUpdate({_id: ObjectID(item._id)}, { $addToSet: {classes: {name: req.body.Монгол_нэр, index: req.body.Хичээлийн_индекс, importancy: item.importancy}}}, function(err, updated){
+        db.collection("hutulbur").findOneAndUpdate({_id: ObjectID(item._id)}, { $addToSet: {classes: {name: req.body.Монгол_нэр, index: req.body.Хичээлийн_индекс, credit: req.body.Багц_цаг, importancy: item.importancy}}}, function(err, updated){
           if(err) res.json({success: false, error: err})
           if(item._id == req.body.majors[req.body.majors.length - 1]._id) res.json({success: true})
         })

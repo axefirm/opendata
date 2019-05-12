@@ -35,22 +35,52 @@
           ></v-text-field>
         </v-flex>
         <v-flex xs12 sm6 md4>
-          <v-text-field
-            v-model="major"
-            :counter="10"
-            label="Major"
-            required
-          ></v-text-field>
+
+
+              <v-autocomplete
+                label="major"
+                v-model="major"
+                :items="kt"
+                text-item="Хөтөлбөрийн_нэр"
+                return-object
+                v-if="kt"
+              >
+                <template slot="item" slot-scope="data">
+                  {{ data.item.Хөтөлбөрийн_нэр }} - {{ data.item.Академик_түвшин }} - {{data.item.Суралцах_хэлбэр}}
+                </template>
+                <template slot="selection" slot-scope="data">
+                  {{ data.item.Хөтөлбөрийн_нэр }} - {{ data.item.Академик_түвшин }} - {{data.item.Суралцах_хэлбэр}}
+                </template>
+              </v-autocomplete>
         </v-flex>
+        <v-flex xs12 sm6 md8>
+
+            <v-combobox
+              v-model="pickedclasses"
+              :items="classes"
+              label="Child Class"
+              text
+              item-text="Монгол_нэр"
+              return-object
+              multiple
+              chips
+            >
+              <template
+                slot-scope="data"
+              >
+                {{data.item.Монгол_нэр}}
+              </template>
+            </v-combobox>
+        </v-flex>
+
         <v-flex xs12 sm6 md4>
-          <v-text-field
-            v-model="classes"
-            label="Classes"
-            required
-          ></v-text-field>
+          <v-btn @click="submit">submit</v-btn>
         </v-flex>
       </v-layout>
     </v-container>
+    <!-- {{pickedclasses}} -->
+    <!-- {{classes}} -->
+    <!-- {{kt}} -->
     </v-form>
     </div>
   </div>
@@ -58,15 +88,61 @@
 
 <script>
 export default {
-  middleware:'auth',
+  middleware:'email',
+  async asyncData({$axios, store}){
+    $axios.setToken(store.state.token);
+    let res = await $axios.$get("http://localhost:8080/getclasses");
+    if(res.success) return {classes: res.data};
+  },
   data(){
     return{
-      schools: ['ХШУИС','БС','БУС','ХУС','НУС','ОУХНУС','ХЗС'],
+      schools: ['ХШУИС','БС','ШУС','ОУХНУС','ХЗС'],
       yoschool:"",
       firstname:"",
       lastname:"",
       major:"",
-      classes:""
+      classes:"",
+      pickedclasses: null,
+      majors: null,
+      kt: null
+    }
+  },
+  watch:{
+    async yoschool(val){
+      console.log(val)
+      this.$axios.setToken(this.$store.state.token);
+      let res = await this.$axios.$get("http://localhost:8080/getschoolmajors/" + val)
+      console.log(res)
+      if(res.success) this.majors = res.data;
+    },
+    majors: function(val){
+      let smt = val;
+      console.log(val);
+      let kt = []
+      for(let i = 0; i < smt.length; i ++){
+        let j = 0
+        for(; j < kt.length; j++){
+          if(kt[j].Хөтөлбөрийн_нэр == smt[i].Хөтөлбөрийн_нэр || kt[j].Хөтөлбөрийн_нэр + " " == smt[i].Хөтөлбөрийн_нэр || kt[j].Хөтөлбөрийн_нэр == smt[i].Хөтөлбөрийн_нэр + " ") break;
+        }
+        if(j == kt.length) kt.push(smt[i]);
+        if(i+1 == smt.length) this.kt = kt;
+      }
+    }
+  },
+  methods:{
+    async submit(){
+      let data = {
+        school: this.yoschool,
+        firstname: this.firstname,
+        lastname: this.lastname,
+        major: this.major,
+        classes: this.pickedclasses,
+        email: this.$store.state.email,
+        password: this.$store.state.password
+      }
+      let res = await this.$axios.$post("http://localhost:8080/signup",data)
+      if(res.success) this.$router.push("/login")
+      else this.$router.push("/signup")
     }
   }
 }
