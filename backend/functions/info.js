@@ -19,15 +19,42 @@ module.exports.getmajordata = function(req, res){
     let data = [];
     if(!foundOne.next){
       async.each(foundOne.classes, function(item, callback){
+        console.log(item)
         db.collection("classes").findOne({Хичээлийн_индекс: item.Хичээлийн_индекс}, function(err, foundItem){
+          // console.log(foundItem)
           if(err) callback(err)
-          async.each()
-          data.push(foundItem);
-          callback();
+          else {
+            if(foundItem) data.push(foundItem)
+            callback();
+          }
         })
       }, function(err){
         if(err) res.json({success: false})
         else{
+          console.log(data.length)
+          let children = []
+          async.each(data, function(itembig, callback1){
+            async.each(itembig.child, function(child, callback2){
+              let b = false
+              async.each(children, function(childrenitem, callback3){
+                if(childrenitem == child){
+                  b = true;
+                  callback3();
+                }
+              }, function(err){
+                if(!b){
+                  children.push(child);
+                  callback2();
+                }
+              })
+            }, function(err){
+              callback1();
+            })
+          }, function(err){
+            console.log("GG")
+            console.log(children);
+          })
+          res.json({success: false})
         }
       })
     } else res.json({success: true, data: next})
