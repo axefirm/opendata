@@ -1,7 +1,7 @@
 let MongoClient = require("mongodb").MongoClient;
 let ObjectID    = require("mongodb").ObjectID;
 let jwt         = require("jsonwebtoken");
-
+let async       = require('async');
 let db;
 
 MongoClient.connect("mongodb://localhost:27017", {useNewUrlParser: true}, function(err, client){
@@ -15,34 +15,54 @@ MongoClient.connect("mongodb://localhost:27017", {useNewUrlParser: true}, functi
 // }
 
 module.exports.getmajordata = function(req, res){
-  db.collection("user").findOne({_id: ObjectID(res.locals._id), next: { $exists: true }}, function(err, foundOne){
-    if(err) res.json({success: false})
-    else {
-      if(!foundOne){
-        db.collection("user").findOne({_id: ObjectID(res.locals._id)}, function(err, foundUser){
-          if(err) res.json({success: false})
-          if(!foundUser) res.json({success: false})
-          else {
-            let mySet = [];
-            foundUser.classes.forEach(function(item){
-              db.collection("classes").findOne({Хичээлийн_индекс: item.Хичээлийн_индекс}, function(err, foundClass){
-                foundClass.child.forEach(function(smt){
-                  let b = false;
-                  mySet.forEach(function(setitem){
-                    if(setitem.Хичээлийн_индекс == smt) b = true
-                  })
-                  if(b == false) mySet.push(foundClass);
-                })
-              })
-            })
-          }
+  db.collection("user").findOne({_id: ObjectID(res.locals._id)}, function(err, foundOne){
+    let data = [];
+    if(!foundOne.next){
+      async.each(foundOne.classes, function(item, callback){
+        db.collection("classes").findOne({Хичээлийн_индекс: item.Хичээлийн_индекс}, function(err, foundItem){
+          if(err) callback(err)
+          async.each()
+          data.push(foundItem);
+          callback();
         })
-      } else {
-        res.json({success: true, data: foundOne.next})
-      }
-    }
+      }, function(err){
+        if(err) res.json({success: false})
+        else{
+        }
+      })
+    } else res.json({success: true, data: next})
   })
 }
+
+// module.exports.getmajordata = function(req, res){
+//   db.collection("user").findOne({_id: ObjectID(res.locals._id), next: { $exists: true }}, function(err, foundOne){
+//     if(err) res.json({success: false})
+//     else {
+//       if(!foundOne){
+//         db.collection("user").findOne({_id: ObjectID(res.locals._id)}, function(err, foundUser){
+//           if(err) res.json({success: false})
+//           if(!foundUser) res.json({success: false})
+//           else {
+//             let mySet = [];
+//             foundUser.classes.forEach(function(item){
+//               db.collection("classes").findOne({Хичээлийн_индекс: item.Хичээлийн_индекс}, function(err, foundClass){
+//                 foundClass.child.forEach(function(smt){
+//                   let b = false;
+//                   mySet.forEach(function(setitem){
+//                     if(setitem.Хичээлийн_индекс == smt) b = true
+//                   })
+//                   if(b == false) mySet.push(foundClass);
+//                 })
+//               })
+//             })
+//           }
+//         })
+//       } else {
+//         res.json({success: true, data: foundOne.next})
+//       }
+//     }
+//   })
+// }
 
 module.exports.getMajors = function(req, res){
   console.log("HHE")

@@ -35,21 +35,17 @@
           ></v-text-field>
         </v-flex>
         <v-flex xs12 sm6 md4>
-
-
               <v-autocomplete
                 label="major"
                 v-model="major"
                 :items="kt"
-                text-item="Хөтөлбөрийн_нэр"
-                return-object
                 v-if="kt"
               >
                 <template slot="item" slot-scope="data">
-                  {{ data.item.Хөтөлбөрийн_нэр }} - {{ data.item.Академик_түвшин }} - {{data.item.Суралцах_хэлбэр}}
+                  {{ data.item.Хөтөлбөрийн_монгол_нэр }} - {{ data.item.Академик_түвшин }} - {{data.item.Суралцах_хэлбэр}}
                 </template>
                 <template slot="selection" slot-scope="data">
-                  {{ data.item.Хөтөлбөрийн_нэр }} - {{ data.item.Академик_түвшин }} - {{data.item.Суралцах_хэлбэр}}
+                  {{ data.item.Хөтөлбөрийн_монгол_нэр }} - {{ data.item.Академик_түвшин }} - {{data.item.Суралцах_хэлбэр}}
                 </template>
               </v-autocomplete>
         </v-flex>
@@ -90,7 +86,7 @@
 export default {
   middleware:'email',
   async asyncData({$axios, store}){
-    $axios.setToken(store.state.token);
+    // $axios.setToken(store.state.token);
     let res = await $axios.$get("http://localhost:8080/getclasses");
     if(res.success) return {classes: res.data};
   },
@@ -117,16 +113,17 @@ export default {
     },
     majors: function(val){
       let smt = val;
-      console.log(val);
+      console.log(val.length);
       let kt = []
       for(let i = 0; i < smt.length; i ++){
         let j = 0
         for(; j < kt.length; j++){
-          if(kt[j].Хөтөлбөрийн_нэр == smt[i].Хөтөлбөрийн_нэр || kt[j].Хөтөлбөрийн_нэр + " " == smt[i].Хөтөлбөрийн_нэр || kt[j].Хөтөлбөрийн_нэр == smt[i].Хөтөлбөрийн_нэр + " ") break;
+          if(kt[j].Хөтөлбөрийн_монгол_нэр == smt[i].Хөтөлбөрийн_монгол_нэр || kt[j].Хөтөлбөрийн_монгол_нэр + " " == smt[i].Хөтөлбөрийн_монгол_нэр || kt[j].Хөтөлбөрийн_монгол_нэр == smt[i].Хөтөлбөрийн_монгол_нэр + " ") break;
         }
         if(j == kt.length) kt.push(smt[i]);
-        if(i+1 == smt.length) this.kt = kt;
+        if(i+1 == val.length) this.kt = kt;
       }
+      console.log(kt);
     }
   },
   methods:{

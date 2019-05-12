@@ -11,11 +11,11 @@ router.get("/mjolnir/:id/:token", auth.mjolnir)
 
 router.get("/info", auth.checkToken, info.profile)
 
-router.get("/getmajors/:id", auth.checkToken, info.getMajors)
+router.get("/getmajors/:id", info.getMajors)
 
-router.get("/getclasses", auth.checkToken, info.getClasses)
+router.get("/getclasses", info.getClasses)
 
-router.get("/getschoolmajors/:names", auth.checkToken, info.getSchoolMajors)
+router.get("/getschoolmajors/:names", info.getSchoolMajors)
 
 router.post("/insertClass", auth.checkToken, data.insertClass)
 
