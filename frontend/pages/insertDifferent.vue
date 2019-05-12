@@ -19,6 +19,15 @@
             </v-autocomplete>
           </v-flex>
           <v-flex xs12 md4>
+            <v-select
+              :items="[4, 3, 2, 1]"
+              v-model="rate"
+              label="Chuhal baidal"
+            >
+
+            </v-select>
+          </v-flex>
+          <v-flex xs12 md4>
             <v-combobox
               v-model="school"
               :items="['ХШУИС', 'БС', 'ШУС', 'ОУХНУС', 'ХЗС']"
@@ -75,11 +84,12 @@
               </template>
             </v-combobox>
           </v-flex>
+          {{selected}}
           <v-flex xs12 md4>
             <v-checkbox
               v-for="(item, index) in kt"
-              v-model="kt[index].checked"
-              :label="item.Хөтөлбөрийн_нэр"
+              v-model="item.checked"
+              :label="item.Хөтөлбөрийн_монгол_нэр"
             ></v-checkbox>
           </v-flex>
 
@@ -108,6 +118,8 @@ export default {
       selectedParent: [[]],
       child: null,
       parent: null,
+      rate: null,
+      selected: []
     }
   },
   watch:{
@@ -121,7 +133,7 @@ export default {
       for(let i = 0; i < smt.length; i ++){
         let j = 0
         for(; j < kt.length; j++){
-          if(kt[j].Хөтөлбөрийн_нэр == smt[i].Хөтөлбөрийн_нэр || kt[j].Хөтөлбөрийн_нэр + " " == smt[i].Хөтөлбөрийн_нэр || kt[j].Хөтөлбөрийн_нэр == smt[i].Хөтөлбөрийн_нэр + " ") break;
+          if(kt[j].Хөтөлбөрийн_монгол_нэр == smt[i].Хөтөлбөрийн_монгол_нэр || kt[j].Хөтөлбөрийн_монгол_нэр + " " == smt[i].Хөтөлбөрийн_монгол_нэр || kt[j].Хөтөлбөрийн_монгол_нэр == smt[i].Хөтөлбөрийн_монгол_нэр + " ") break;
         }
         if(j == kt.length) kt.push(smt[i]);
         if(i+1 == smt.length) this.kt = kt;
@@ -147,6 +159,14 @@ export default {
         this.parent.push(tmp);
         console.log(this.parent)
       }
+    },
+    kt(val){
+      this.selected = [];
+      for(let i = 0; i < val.length; i++){
+        let data = val[i];
+        data.importancy = this.rate;
+        if(val[i].checked == true) this.selected.push(data);
+      }
     }
   },
   methods:{
@@ -157,19 +177,20 @@ export default {
         smt += this.school[i] + ","
       }
       smt += this.school[this.school.length - 1];
-      console.log(smt);
+      // console.log(smt);
       let res = await this.$axios.$get("http://localhost:8080/getschoolmajors/" + smt)
       if(res.success) this.majors = res.data;
     },
     async sendClass(){
       this.$axios.setToken(this.$store.state.token);
       let data = this.name;
-      console.log(data)
+      // console.log(data)
       data.parent =  this.parent;
       data.child = this.child;
-      data.majors = this.majors;
+      data.majors = this.selected;
       console.log(data)
-      // let res = await this.$axios.$post("http://localhost:8080/insertClass",data)
+      let res = await this.$axios.$post("http://localhost:8080/insertClass",data)
+      console.log(res)
     }
   }
 }

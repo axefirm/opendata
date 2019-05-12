@@ -18,16 +18,20 @@ module.exports.getmajordata = function(req, res){
   db.collection("user").findOne({_id: ObjectID(res.locals._id), next: { $exists: true }}, function(err, foundOne){
     if(err) res.json({success: false})
     else {
-      if(!found){
+      if(!foundOne){
         db.collection("user").findOne({_id: ObjectID(res.locals._id)}, function(err, foundUser){
           if(err) res.json({success: false})
           if(!foundUser) res.json({success: false})
           else {
-            let mySet = new Set();
+            let mySet = [];
             foundUser.classes.forEach(function(item){
               db.collection("classes").findOne({Хичээлийн_индекс: item.Хичээлийн_индекс}, function(err, foundClass){
                 foundClass.child.forEach(function(smt){
-                  mySet.add(foundClass);
+                  let b = false;
+                  mySet.forEach(function(setitem){
+                    if(setitem.Хичээлийн_индекс == smt) b = true
+                  })
+                  if(b == false) mySet.push(foundClass);
                 })
               })
             })
@@ -43,7 +47,7 @@ module.exports.getmajordata = function(req, res){
 module.exports.getMajors = function(req, res){
   console.log("HHE")
   db.collection("classes").findOne({Хичээлийн_индекс: req.params.id}, function(err, foundOne){
-    db.collection("hutulbur").find({Харьяалах_нэгжийн_нэр: foundOne.Харьяалах_тэнхим}).toArray(function(err, foundMany){
+    db.collection("hutulbur").find({Харьяалах_нэгжийн_нэр: foundOne.Харьяалах_тэнхим}, {projection: {classes: 0}}).toArray(function(err, foundMany){
       if(err) res.json({success: false})
       else res.json({success: true, data: foundMany})
     })
@@ -67,10 +71,12 @@ module.exports.getSchoolMajors = function(req, res){
     if(data[i] == 'ОУХНУС') data[i] = "Олон улсын харилцаа, нийтийн удирдлагын сургууль";
     if(data[i] == 'ХЗС') data[i] = "Хууль зүйн сургууль";
   }
-  db.collection("hutulbursurhoslol").find({Cургуулийн_нэр: { $in: data }, Төлөв: "Идэвхтэй сурч байгаа"}).toArray(function(err, foundMany){
+  db.collection("hutulbursurhoslol").distinct("Хөтөлбөрийн_нэр", {Cургуулийн_нэр: { $in: data }, Төлөв: "Идэвхтэй сурч байгаа"}, function(err, foundMany){
     console.log(foundMany)
-    if(err) res.json({success: false})
-    else res.json({success: true, data: foundMany})
+    db.collection("hutulbur").find({Хөтөлбөрийн_монгол_нэр: {$in: foundMany}}, {projection: {classes: 0}}).toArray(function(err, foundManyMany){
+      if(err) res.json({success: false})
+      else res.json({success: true, data: foundManyMany})
+    })
   })
 }
 
